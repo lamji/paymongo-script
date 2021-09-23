@@ -71,8 +71,8 @@ frappe.ready(function() {
 					<input type="text" class="form-control text12" value=${frappe.session.user} id="Email" disabled readonly>
 				</div>
 				<div class="col">
-					<label class="text12" for="Address_Line2" class="form-label p-4">Country</label></br>
-					<select class="form-select text12" id="Country_Select"></select>
+					<label class="text12" for="Country" class="form-label p-4">Country</label></br>
+					<input type="text" class="form-control text12" placeholder="Philippines" id="Countr">
 				</div>
 			</div>
 			<div class="row mt-1">
@@ -106,6 +106,7 @@ frappe.ready(function() {
 		</label>
 	</div>
 	`
+	const error = `<p class="error"></p>`
 	const next_button = `
 		<button class="btn my-5" id="paynow_btn">Pay Now</button>
 	`
@@ -124,7 +125,7 @@ frappe.ready(function() {
 		const grabpay = () => {
 			console.log("grabpay click")
 		}
-		$(".align-items-center").append(title + button + gcas_form + billing_details + payment_choice + next_button).removeClass("d-flex justify-content-between align-items-center")
+		$(".align-items-center").append(title + button + gcas_form + billing_details +  error + payment_choice + next_button).removeClass("d-flex justify-content-between align-items-center")
 	
 		// Call the function
 		$("#card").click(function(){
@@ -136,24 +137,7 @@ frappe.ready(function() {
 		$("#gcash").click(function(){
 			gcash()
 		});
-		//get country list
-		(function() {
-			fetch('https://countriesnow.space/api/v0.1/countries')
-			.then(res => res.json())
-			.then(res => {
-				const list = res.data
-				var elm = document.getElementById('Country_Select'),
-				df = document.createDocumentFragment();
-				for (var i = 0; list.length > i; i++) {
-					var option = document.createElement('option');
-					option.value = i;
-					option.appendChild(document.createTextNode(list[i].country));
-					df.appendChild(option);
-				}
-				elm.appendChild(df);
-			})
-			
-		}());
+	
 		// checkbox
 		$( "#installment" ).click(function() {
 			console.log("check ins")
@@ -164,21 +148,24 @@ frappe.ready(function() {
 			$("#installment").prop('checked', false)
 		});
 		// input value
-		// Details variable
-		var gcash_number =""
-		var gcash_name =""
-		// Gcash
+		
 		const input_id = ["Gcash_Number", "Gcash_Name","Full_Name","Address_Line1","Phone_Number","Address_Line2","Email","Country_Select","State","City","Zip_Code"]
-		// $( "#Gcash_Number" ).keyup(function() {
-		// 	var value = $( this ).val();
-		// 	gcash_number = value
-		// }).keyup();
-		input_id.forEach(element => {
-			console.log("#" + element)
-		});
+		const gcash_func = () => {
+			var res = []
+			for (let i = 0; i < input_id.length; i++) {
+				const element = input_id[i];
+				$( "#" + element ).keyup(function() {
+					var value = $( this ).val();
+						res[ ( i < 10 ? input_id[ i ] : '' )] = value;
+				}).keyup()
+			}
+			return res
+		}	
 		// pay button
 		$('#paynow_btn').click( function(){
-			alert(gcash_number)
+			const input_array = gcash_func()
+			console.log(input_array)
 		})
+		
 	}
 })
