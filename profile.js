@@ -22,25 +22,24 @@ frappe.ready(function() {
 				</div>
 				`
 				const title = `<h2>PAYMENT METHOD</h2>`
-				const button = `
-				<div class="container">
-				<div class="row">
-					<div class="col btn mx-3 btn_label" id="card">
-						Card
-					</div>
-					<div class="col btn mx-3 btn_label" id="grabpay">
-						Grabpay
-					</div>
-					<div class="col btn mx-3 btn_label" id="gcash">
-						Gcash
-					</div>
-				</div>
-				</div>
+				const no_payment = `
+					<p class="alert alert-warning no_payment">No paymnet method selected</p>
+				`
+				const select_option = `
+				<form>
+					<label>Select Payment Method:</label>
+					<select class="payment_method text12" style="width: 200px !important">
+						<option value="-- Select --"> -- Select --</option>
+						<option value="Gcash">Gcash</option>
+						<option value="GrabPay">GrabPay</option>
+						<option value="Debit/Credit">Debit/Credit</option>
+					</select>
+				</form>
 				`
 				const gcas_form =`
 				<div class="gcash_form_container my-5 p-5 border "
 					<h4></h4>
-					<h4>Gcash Payment Form</h4>
+					<h4><img id='theImg' src='https://gadgetsmagazine.com.ph/wp-content/uploads/2020/05/GCASH-logo.jpg' style="width: 50px; margin-right: 10px">Gcash Payment Form</h4>
 					<form>
 						<div class="row">
 							<div class="col text12">
@@ -50,6 +49,56 @@ frappe.ready(function() {
 							<div class="col text12">
 							<label for="Gcash_Name" class="form-label">Full Name (Registered in Gcash)</label>
 							<input  class="form-control" id="Gcash_Name">
+							</div>
+						</div>
+					</form>
+				</div>
+				`
+				const card_form =`
+				<div class="card_form_container my-5 p-5 border "
+					<h4></h4>
+					<h4><img id='theImg' src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Former_Visa_%28company%29_logo.svg/3072px-Former_Visa_%28company%29_logo.svg.png' style="width: 50px; margin-right: 10px">Card Payment Form</h4>
+					<form>
+						<div class="row">
+							<div class="col text12">
+							<label for="Card_Number" class="form-label">Card Number</label>
+							<input type="number" class="form-control" value="" id="Card_Number">
+							</div>
+							<div class="col text12">
+							<label for="Card_Name" class="form-label">Card Name</label>
+							<input  class="form-control" id="Card_Name">
+							</div>
+						</div>
+						<div class="row mt-3">
+							<div class="col text12">
+								<label for="Expiration_Month" class="form-label">Expiration Month</label>
+								<input type="number" class="form-control" value="" id="Expiration_Month">
+							</div>
+							<div class="col text12">
+								<label for="Expiration_Year" class="form-label">Expiration Year</label>
+								<input  class="form-control" id="Expiration_Year">
+							</div>
+							<div class="col text12">
+								<label for="CVC" class="form-label">CVC</label>
+								<input  class="form-control" id="CVC">
+							</div>
+						</div>
+					</form>
+				</div>
+				`
+				const grabpay_form =`
+				<div class="grabpay_form_container my-5 p-5 border "
+					<h4></h4>
+					<h4><img id='theImg' src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpfbN61TTZ6wlleMzPFlVIwT9P43QoiYptWA&usqp=CAU' style="width: 50px; margin-right: 10px">GrabPay Payment Form</h4>
+					<form>
+						<div class="row">
+							<div class="col text12">
+							<label for="Grabpay_Number" class="form-label">Number (Registered in GrabPay)</label>
+							<input type="number" class="form-control" value="" id="Grabpay_Number">
+							</div>
+							<div class="col text12">
+							<label for="Grabpay_Name" class="form-label">Full Name (Registered in GrabPay)</label>
+							<input  class="form-control" id="Grabpay_Name">
 							</div>
 						</div>
 					</form>
@@ -107,7 +156,8 @@ frappe.ready(function() {
 					</div>
 				`
 				const payment_choice = `
-				<div class="form-check text12">
+				<p class="mt-3">Paymnet Plan: </p>
+				<div class="form-check text12 mt-3">
 					<input class="form-check-input" type="checkbox" value="" id="installment">
 					<label class="form-check-label" for="installment">
 						Installment
@@ -135,30 +185,13 @@ frappe.ready(function() {
 				if(frappe.session.user === "Guest"){
 					$(".align-items-center").append(login_required).removeClass("d-flex justify-content-between align-items-center")
 				}else{
-					// Functions
-					
-					const gcash = () => {
-						console.log("gcash click")
-					}
-					const card = () => {
-						console.log("card click")
-					}
-					const grabpay = () => {
-						console.log("grabpay click")
-					}
-					$(".align-items-center").append(title + button + gcas_form + billing_details +  error + outstanding_balance + payment_choice + payment + next_button).removeClass("d-flex justify-content-between align-items-center")
-					
-					// Call the function
-					$("#card").click(function(){
-						card()
-					});
-					$("#grabpay").click(function(){
-						grabpay()
-					});
-					$("#gcash").click(function(){
-						gcash()
-					});
 				
+					$(".align-items-center").append(title + select_option + no_payment + gcas_form + card_form + grabpay_form + billing_details +  error + outstanding_balance + payment_choice + payment + next_button).removeClass("d-flex justify-content-between align-items-center")
+					//hide form
+					$('.grabpay_form_container').hide()
+					$('.card_form_container').hide()
+					$('.gcash_form_container').hide()
+			
 					// checkbox
 					$( "#installment" ).click(function() {
 						$("#fullpayment").prop('checked', false)
@@ -168,10 +201,25 @@ frappe.ready(function() {
 						$("#installment").prop('checked', false)
 						$(".payment").html(`<input type="text" class="form-control w-25 text12" value=${numberWithCommas(res.data.outstanding_amount)} id="payment" disabled readonly>`)
 					});
-					// input value
-					
-					const input_id = ["payment", "Gcash_Number", "Gcash_Name","Full_Name","Address_Line1","Phone_Number","Address_Line2","Email","Country","State","City","Zip_Code"]
+					// input value functions
+					//GrabPay
+					const grabpay_func = () => {
+						const input_id = ["payment", "Grabpay_Number", "Grabpay_Name","Full_Name","Address_Line1","Phone_Number","Address_Line2","Email","Country","State","City","Zip_Code"]
+						var res = []
+						for (let i = 0; i < input_id.length; i++) {
+							const element = input_id[i];
+							$( "#" + element ).keyup(function() {
+								var value = $( this ).val();
+								// var data = element
+								res[ ( i < 10 ? input_id[ i ] : '' )] = value;
+								// res.push({[data]: value})
+							}).keyup()
+						}
+						return res
+					}
+					// Gcash
 					const gcash_func = () => {
+						const input_id = ["payment", "Gcash_Number", "Gcash_Name","Full_Name","Address_Line1","Phone_Number","Address_Line2","Email","Country","State","City","Zip_Code"]
 						var res = []
 						for (let i = 0; i < input_id.length; i++) {
 							const element = input_id[i];
@@ -184,27 +232,93 @@ frappe.ready(function() {
 						}
 						return res
 					}	
+					
+					// Select
+					let selected;
+					$("select.payment_method").change(function(){
+						var selected_paymnet= $(this).children("option:selected").val();
+						selected = selected_paymnet
+						if(selected_paymnet == "Gcash"){
+							$('.grabpay_form_container').hide()
+							$('.card_form_container').hide()
+							$('.no_payment').hide()
+							$('.gcash_form_container').show()
+						}else if(selected_paymnet == "GrabPay"){
+							$('.grabpay_form_container').show()
+							$('.no_payment').hide()
+							$('.gcash_form_container').hide()
+							$('.card_form_container').hide()
+						}else if(selected_paymnet == "Debit/Credit"){
+							$('.grabpay_form_container').hide()
+							$('.no_payment').hide()
+							$('.gcash_form_container').hide()
+							$('.card_form_container').show()
+						}else{
+							console.log("burned")
+							$('.no_payment').show()
+							$('.grabpay_form_container').hide()
+							$('.gcash_form_container').hide()
+							$('.card_form_container').hide()
+						}
+					});
+					
 					// pay button
 					$('#paynow_btn').click( function(){
-						const array = gcash_func()
-						console.log(array)
-						var installment= document.getElementById("installment");
-						var fullpayment= document.getElementById("fullpayment");
-						
-						if(array.Gcash_Number === '' || array.Gcash_Name === '' || array.Full_Name === '' || array.Address_Line1 === '' || array.Phone_Number === '' || array.Address_Line2 === '' || array.Email === '' || array.Country === '' || array.State === '' || array.City === '' || array.Zip_Code === ''){
-							console.log("some field is empty")
-							$(".error").html("<p class='alert alert-danger'> Some fields are empty</p>")
-						}else{
-							
-							if(installment.checked || fullpayment.checked ) {
-								console.log("clicked")
-								$(".error").html("<p class='alert alert-success'> success</p>")
-							} else {
-								console.log("not")
-								$(".error").html("<p class='alert alert-danger'>Check installment or full payment</p>")
+						//if Gcash
+						if(selected == "Gcash"){
+							const array = gcash_func()
+							console.log(array)
+							var installment= document.getElementById("installment");
+							var fullpayment= document.getElementById("fullpayment");
+							if(array.Gcash_Number === '' || array.Gcash_Name === '' || array.Full_Name === '' || array.Address_Line1 === '' || array.Phone_Number === '' || array.Address_Line2 === '' || array.Email === '' || array.Country === '' || array.State === '' || array.City === '' || array.Zip_Code === ''){
+								$(".error").html("<p class='alert alert-danger'> Some fields are empty</p>")
+							}else{
+								
+								if(installment.checked || fullpayment.checked ) {
+									$(".error").hide()
+									// call paymongo
+								} else {
+									$(".error").html("<p class='alert alert-danger'>Check one of the paymnet plan</p>")
+								}
 							}
+						// If GrabPay
+						}else if(selected == "GrabPay"){
+							const array = grabpay_func()
+							console.log(array)
+							var installment= document.getElementById("installment");
+							var fullpayment= document.getElementById("fullpayment");
+							if(array.Gcash_Number === '' || array.Gcash_Name === '' || array.Full_Name === '' || array.Address_Line1 === '' || array.Phone_Number === '' || array.Address_Line2 === '' || array.Email === '' || array.Country === '' || array.State === '' || array.City === '' || array.Zip_Code === ''){
+								$(".error").html("<p class='alert alert-danger'> Some fields are empty</p>")
+							}else{
+								if(installment.checked || fullpayment.checked ) {
+									$(".error").hide()
+									// call paymongo
+								} else {
+									$(".error").html("<p class='alert alert-danger'>Check one of the paymnet plan</p>")
+								}
+							}
+						// If Card
+						}else if(selected == "Debit/Credit"){
+							const array = card_func()
+							console.log(array)
+							var installment= document.getElementById("installment");
+							var fullpayment= document.getElementById("fullpayment");
+							if(array.Gcash_Number === '' || array.Gcash_Name === '' || array.Full_Name === '' || array.Address_Line1 === '' || array.Phone_Number === '' || array.Address_Line2 === '' || array.Email === '' || array.Country === '' || array.State === '' || array.City === '' || array.Zip_Code === ''){
+								$(".error").html("<p class='alert alert-danger'> Some fields are empty</p>")
+							}else{
+								if(installment.checked || fullpayment.checked ) {
+									$(".error").hide()
+									// call paymongo
+								} else {
+									$(".error").html("<p class='alert alert-danger'>Check one of the paymnet plan</p>")
+								}
+							}
+						// elese
+						}else{
+							$('.no_payment').show()
+							//error
 						}
-					
+						
 					})
 					
 				}
