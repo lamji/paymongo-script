@@ -1,3 +1,21 @@
+// clinet script indicator
+frappe.ui.form.on('Fees', {
+	onload(frm) {
+		// your code here
+		console.log(frm)
+		const recieved_amount = frm.doc.recieved_amout
+		const hahha = frm.doc.outstanding_balance - recieved_amount
+		console.log(frm.doc.outstanding_balance)
+		
+		cur_frm.set_value("outstanding_balance", frm.doc.outstanding_amount - recieved_amount)
+	
+	    frm.save('Update')
+
+
+
+	}
+})
+
 frappe.ready(function() {
 	// with comma
 	function numberWithCommas(x) {
