@@ -15,6 +15,20 @@ frappe.ui.form.on('Fees', {
 
 	}
 })
+// server script indicator
+frappe.listview_settings['Fees'] = {
+	add_fields: ["grand_total", "outstanding_amount", "due_date"],
+	get_indicator: function(doc) {
+		if(flt(doc.remaining_balance==0) {
+			return [__("Paid"), "green", "remaining_balance,=,0"];
+		} else if (flt(doc.remaining_balance) > 0 && doc.due_date >= frappe.datetime.get_today()) {
+			return [__("Unpaid"), "orange", "remaining_balance,>,0|due_date,>,Today"];
+		} else if (flt(doc.remaining_balance) > 0 && doc.due_date < frappe.datetime.get_today()) {
+			return [__("Overdue"), "red", "remaining_balance,>,0|due_date,<=,Today"];
+		}
+	}
+};
+
 
 frappe.ready(function() {
 	// with comma
